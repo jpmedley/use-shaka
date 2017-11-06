@@ -1,0 +1,27 @@
+{
+  "name": "use-shaka",
+  "version": "0.0.1",
+  "description": "Test platform for validating the Shaka Player documentation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jpmedley/use-shaka.git"
+  },
+  "keywords": [
+    "Shaka",
+    "Player"
+  ],
+  "author": "Joseph Medley <jmedley@google.com> (https://developers.google.com/web)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpmedley/use-shaka/issues"
+  },
+  "homepage": "https://github.com/jpmedley/use-shaka#readme",
+  "dependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1"
+  }
+}
