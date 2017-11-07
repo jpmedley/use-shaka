@@ -3,22 +3,68 @@
 const fs = require('fs');
 const gulp = require('gulp');
 const path = require('path');
+const replace = require('gulp-html-replace');
 
-const SHAKA = '../shaka-source/dist/'
+const SHAKA = '../shaka-source';
+const APP = 'app/';
+const PRODFILES = [
+  '/dist/shaka-player.compiled.externs.js',
+  '/dist/shaka-player.compiled.js',
+  '/dist/shaka-player.compiled.map'
+]
+const DEBUGFILES = [
+  '/dist/deps.js',
+  '/dist/shaka-player.compiled.debug.externs.js',
+  '/dist/shaka-player.compiled.debug.js',
+  '/dist/shaka-player.compiled.debug.map',
+  '/shaka-player.uncompiled.js',
+  '/third_party/closure/goog/base.js'
+]
 
-gulp.task('update-shaka', (cb) => {
-  let neededFiles = [
-    'shaka-player.compiled.debug.externs.js',
-    'shaka-player.compiled.debug.js',
-    'shaka-player.compiled.debug.map',
-    'shaka-player.compiled.externs.js',
-    'shaka-player.compiled.js',
-    'shaka-player.compiled.map'
-  ];
-  neededFiles.forEach((item) => {
+gulp.task('debug', (cb) => {
+  PRODFILES.forEach((item) => {
+    let fileToDelete = path.join(APP, item);
+    fs.unlinkSync(fileToDelete);
+  });
+  DEBUGFILES.forEach((item) => {
     let fileToCopy = path.join(SHAKA, item);
-    let destination = path.join('app/dist', item)
+    let destination = path.join('app', item);
+    console.log("Writing to " + destination);
     fs.createReadStream(fileToCopy)
       .pipe(fs.createWriteStream(destination));
-  })
+  });
+  let data = fs.readFileSync('./src/templates/debug.med');
+  let player = {
+    player: {
+      src: data.toString('utf8'),
+      tpl: '%s'
+    }
+  }
+  gulp.src('./src/index.html')
+    .pipe(replace(player))
+    .pipe(gulp.dest(APP));
+});
+
+gulp.task('prod', (cb) => {
+  DEBUGFILES.forEach((item) => {
+    let fileToDelete = path.join(APP, item);
+    fs.unlinkSync(fileToDelete);
+  });
+  PRODFILES.forEach((item) => {
+    let fileToCopy = path.join(SHAKA, item);
+    let destination = path.join('app', item);
+    console.log("Writing to " + destination);
+    fs.createReadStream(fileToCopy)
+      .pipe(fs.createWriteStream(destination));
+  });
+  let data = fs.readFileSync('./src/templates/prod.med');
+  let player = {
+    player: {
+      src: data.toString('utf8'),
+      tpl: '%s'
+    }
+  }
+  gulp.src('./src/index.html')
+    .pipe(replace(player))
+    .pipe(gulp.dest(APP));
 });

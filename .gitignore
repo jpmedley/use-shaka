@@ -58,5 +58,8 @@ typings/
 .env
 
 # Project-specific
-app/dist/
 app/*.pem
+app/dist/
+app/index.html
+app/third_party
+shaka-player.uncompiled.js
