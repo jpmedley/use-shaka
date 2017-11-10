@@ -24,7 +24,14 @@ const DEBUGFILES = [
 gulp.task('debug', (cb) => {
   PRODFILES.forEach((item) => {
     let fileToDelete = path.join(APP, item);
-    fs.unlinkSync(fileToDelete);
+    try {
+      fs.unlinkSync(fileToDelete);
+    }
+    catch (e) {
+      // If I call gulp debug twice, unlinkSync()
+      // will throw errors I don't care about.
+      if (!e.errno == -2) { throw e; }
+    }
   });
   DEBUGFILES.forEach((item) => {
     let fileToCopy = path.join(SHAKA, item);
@@ -48,7 +55,14 @@ gulp.task('debug', (cb) => {
 gulp.task('prod', (cb) => {
   DEBUGFILES.forEach((item) => {
     let fileToDelete = path.join(APP, item);
-    fs.unlinkSync(fileToDelete);
+    try {
+      fs.unlinkSync(fileToDelete);
+    }
+    catch (e) {
+      // If I call gulp prod twice, unlinkSync()
+      // will throw errors I don't care about.
+      if (!e.errno == -2) { throw e; }
+    }
   });
   PRODFILES.forEach((item) => {
     let fileToCopy = path.join(SHAKA, item);
